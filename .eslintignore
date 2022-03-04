@@ -2,3 +2,4 @@
 **/out/*
 **/.next/*
 /.eslintrc.js
+/types/generated/graphql.tsx
