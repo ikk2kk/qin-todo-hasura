@@ -14,7 +14,8 @@
     "fix:prettier": "yarn lint:prettier --write",
     "test": "run-p -l -c --aggregate-output lint:* unit",
     "unit": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "gen-types": "graphql-codegen --config codegen.yml"
   },
   "babel": {
     "presets": [
@@ -25,11 +26,19 @@
     "printWidth": 120
   },
   "dependencies": {
+    "@apollo/client": "^3.5.10",
+    "@apollo/react-hooks": "^4.0.0",
+    "@heroicons/react": "^1.0.6",
+    "graphql": "^16.3.0",
     "next": "12.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/typescript": "^2.4.5",
+    "@graphql-codegen/typescript-operations": "2.3.2",
+    "@graphql-codegen/typescript-react-apollo": "3.2.8",
     "@tailwindcss/forms": "^0.5.0",
     "@tailwindcss/line-clamp": "^0.3.1",
     "@tailwindcss/typography": "^0.5.2",
