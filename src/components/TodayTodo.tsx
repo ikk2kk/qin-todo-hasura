@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_TODO, GET_TODOS } from "queries/queries";
 import { TodoItem } from "src/components/TodoItem";
@@ -7,9 +8,10 @@ import type { GetTodosQuery } from "types/generated/graphql";
 export const TodayTodo = () => {
   const { data, error } = useQuery<GetTodosQuery>(GET_TODOS, {
     fetchPolicy: "cache-first",
+    variables: { target_date: "today" },
   });
   const [createTodo] = useMutation(CREATE_TODO, {
-    refetchQueries: [{ query: GET_TODOS }],
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
   });
 
   // const [todoItemList, setTodoItemList] = useState([
@@ -24,7 +26,7 @@ export const TodayTodo = () => {
     // });
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      await createTodo({ variables: { title: todoText, target_date: "abc", done: false } });
+      await createTodo({ variables: { title: todoText, target_date: "today", done: false } });
       // alert("Add todo");
       // reset();
     } catch (error) {

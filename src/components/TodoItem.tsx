@@ -20,7 +20,10 @@ export const TodoItem: VFC<Props> = (props) => {
 
   const [isFocus, setIsFocus] = useState(false);
   const [updateTodo] = useMutation(UPDATE_TODO);
-  const [deleteTodo] = useMutation(DELETE_TODO, { refetchQueries: [{ query: GET_TODOS }] });
+  const [deleteTodo] = useMutation(DELETE_TODO, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
+  });
 
   useEffect(() => {
     setTodoText(props.text);

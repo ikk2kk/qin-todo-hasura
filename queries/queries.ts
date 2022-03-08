@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_TODOS = gql`
-  query GetTodos {
-    todos(order_by: { created_at: asc }) {
+  query GetTodos($target_date: String!) {
+    todos(order_by: { created_at: asc }, where: { target_date: { _eq: $target_date } }) {
       id
       title
       target_date
