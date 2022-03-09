@@ -1,13 +1,15 @@
 import { useMutation } from "@apollo/client";
 import { DocumentDuplicateIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import { DELETE_TODO, GET_TODOS, UPDATE_TODO } from "queries/queries";
+import { DELETE_TODO, DUPLICATE_TODO, GET_TODOS, UPDATE_TODO } from "queries/queries";
 import type { ChangeEvent, FormEvent, VFC } from "react";
 import { useEffect, useState } from "react";
 import { Input } from "src/components/Input";
+import type { Todos } from "types/generated/graphql";
 
 type Props = {
   addTodoItem: (todoText: string) => void;
+  todo?: Todos;
   text: string;
   name: string;
   done?: boolean;
@@ -24,7 +26,10 @@ export const TodoItem: VFC<Props> = (props) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
   });
-
+  const [createTodo] = useMutation(DUPLICATE_TODO, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
+  });
   useEffect(() => {
     setTodoText(props.text);
     if (props.done === true) {
@@ -92,8 +97,19 @@ export const TodoItem: VFC<Props> = (props) => {
     }
   };
 
-  const handleDuplicate = () => {
+  const handleDuplicate = async () => {
     alert("Duplicate " + props.name);
+    try {
+      await createTodo({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        variables: { title: props.todo?.title, target_date: "today", done: false, created_at: props.todo?.created_at },
+      });
+      // alert("Add todo");
+      // reset();
+    } catch (error) {
+      console.error(error);
+      alert("Fail duplicate todo");
+    }
   };
   const handleTrash = async () => {
     // alert("Trash " + props.name);

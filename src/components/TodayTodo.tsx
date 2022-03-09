@@ -52,6 +52,7 @@ export const TodayTodo = () => {
           return (
             <TodoItem
               key={todoItem.id}
+              todo={todoItem}
               addTodoItem={addTodoItem}
               text={todoItem.title}
               name={todoItem.id}

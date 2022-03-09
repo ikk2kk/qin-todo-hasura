@@ -24,6 +24,18 @@ export const CREATE_TODO = gql`
     }
   }
 `;
+export const DUPLICATE_TODO = gql`
+  mutation CreateTodo($title: String!, $target_date: String!, $done: Boolean!, $created_at: timestamptz) {
+    insert_todos_one(object: { title: $title, target_date: $target_date, done: $done, created_at: $created_at }) {
+      id
+      title
+      target_date
+      done
+      created_at
+      updated_at
+    }
+  }
+`;
 export const DELETE_TODO = gql`
   mutation DeleteTodo($id: uuid!) {
     delete_todos_by_pk(id: $id) {
