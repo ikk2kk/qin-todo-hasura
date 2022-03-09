@@ -10,6 +10,7 @@ import type { Todos } from "types/generated/graphql";
 type Props = {
   addTodoItem: (todoText: string) => void;
   todo?: Todos;
+  targetDate: string;
   text: string;
   name: string;
   done?: boolean;
@@ -24,11 +25,11 @@ export const TodoItem: VFC<Props> = (props) => {
   const [updateTodo] = useMutation(UPDATE_TODO);
   const [deleteTodo] = useMutation(DELETE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
   });
   const [createTodo] = useMutation(DUPLICATE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
   });
   useEffect(() => {
     setTodoText(props.text);
@@ -45,7 +46,7 @@ export const TodoItem: VFC<Props> = (props) => {
       try {
         await updateTodo({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          variables: { id: props.name, title: todoText, target_date: "today", done: false },
+          variables: { id: props.name, title: todoText, target_date: props.targetDate, done: false },
         });
       } catch (error) {
         alert("更新失敗");
@@ -55,7 +56,7 @@ export const TodoItem: VFC<Props> = (props) => {
       try {
         await updateTodo({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          variables: { id: props.name, title: todoText, target_date: "today", done: true },
+          variables: { id: props.name, title: todoText, target_date: props.targetDate, done: true },
         });
       } catch (error) {
         alert("更新失敗");
@@ -89,7 +90,7 @@ export const TodoItem: VFC<Props> = (props) => {
       try {
         await updateTodo({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          variables: { id: props.name, title: todoText, target_date: "today", done: isChecked ? true : false },
+          variables: { id: props.name, title: todoText, target_date: props.targetDate, done: isChecked ? true : false },
         });
       } catch (error) {
         alert("更新失敗");
@@ -98,11 +99,17 @@ export const TodoItem: VFC<Props> = (props) => {
   };
 
   const handleDuplicate = async () => {
-    alert("Duplicate " + props.name);
+    // alert("Duplicate " + props.name);
     try {
       await createTodo({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        variables: { title: props.todo?.title, target_date: "today", done: false, created_at: props.todo?.created_at },
+        variables: {
+          title: props.todo?.title,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          target_date: props.todo?.target_date,
+          done: props.todo?.done,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          created_at: props.todo?.created_at,
+        },
       });
       // alert("Add todo");
       // reset();

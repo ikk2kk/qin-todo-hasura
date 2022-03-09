@@ -5,9 +5,9 @@ import { TodoItem } from "src/components/TodoItem";
 import { TodoTitle } from "src/components/TodoTitle";
 import type { GetTodosQuery } from "types/generated/graphql";
 
-const TARGET_DATE = "today";
+const TARGET_DATE = "tomorrow";
 
-export const TodayTodo = () => {
+export const TomorrowTodo = () => {
   const { data, error } = useQuery<GetTodosQuery>(GET_TODOS, {
     fetchPolicy: "cache-first",
     variables: { target_date: TARGET_DATE },
@@ -16,21 +16,10 @@ export const TodayTodo = () => {
     refetchQueries: [{ query: GET_TODOS, variables: { target_date: TARGET_DATE } }],
   });
 
-  // const [todoItemList, setTodoItemList] = useState([
-  //   { id: "today0", text: "Next.jsのセットアップ" },
-  //   { id: "today1", text: "ESLintのインストール" },
-  // ]);
   const addTodoItem = async (todoText: string) => {
-    // alert("AddTodoItem");
-    // setTodoItemList((prev) => {
-    //   const id = "today" + todoItemList.length;
-    //   return [...prev, { id: id, text: todoText }];
-    // });
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       await createTodo({ variables: { title: todoText, target_date: TARGET_DATE, done: false } });
-      // alert("Add todo");
-      // reset();
     } catch (error) {
       console.error(error);
       alert("Fail add todo");
@@ -46,8 +35,8 @@ export const TodayTodo = () => {
   }
 
   return (
-    <div className="flex-1 p-4 bg-red-100">
-      <TodoTitle title="今日する" className="mb-6 text-red-400 " />
+    <div className="flex-1 p-4 bg-orange-100">
+      <TodoTitle title="明日する" className="mb-6 text-orange-400 " />
 
       <div className="space-y-3">
         {data?.todos.map((todoItem) => {
@@ -60,11 +49,11 @@ export const TodayTodo = () => {
               text={todoItem.title}
               name={todoItem.id}
               done={todoItem.done}
-              variant="red"
+              variant="orange"
             />
           );
         })}
-        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} text="" name="today_new" />
+        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} text="" name="tomorrow_new" />
       </div>
     </div>
   );
