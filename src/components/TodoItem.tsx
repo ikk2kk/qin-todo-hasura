@@ -12,7 +12,6 @@ type Props = {
   todo?: Todos;
   targetDate: string;
   name: string;
-  done?: boolean;
   variant?: "orange" | "yellow" | "red";
 };
 
@@ -33,11 +32,12 @@ export const TodoItem: VFC<Props> = (props) => {
   useEffect(() => {
     if (props.todo) {
       setTodoText(props.todo.title);
-    }
-    if (props.done === true) {
-      setIsChecked(1);
-    } else {
-      setIsChecked(0);
+
+      if (props.todo.done === true) {
+        setIsChecked(1);
+      } else {
+        setIsChecked(0);
+      }
     }
   }, []);
 

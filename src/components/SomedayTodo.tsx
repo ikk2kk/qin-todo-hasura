@@ -47,7 +47,6 @@ export const SomedayTodo = () => {
               targetDate={TARGET_DATE}
               addTodoItem={addTodoItem}
               name={todoItem.id}
-              done={todoItem.done}
               variant="yellow"
             />
           );
