@@ -46,14 +46,13 @@ export const TomorrowTodo = () => {
               todo={todoItem}
               targetDate={TARGET_DATE}
               addTodoItem={addTodoItem}
-              text={todoItem.title}
               name={todoItem.id}
               done={todoItem.done}
               variant="orange"
             />
           );
         })}
-        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} text="" name="tomorrow_new" />
+        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} name="tomorrow_new" />
       </div>
     </div>
   );

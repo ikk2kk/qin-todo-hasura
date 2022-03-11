@@ -46,14 +46,13 @@ export const TodayTodo = () => {
               todo={todoItem}
               targetDate={TARGET_DATE}
               addTodoItem={addTodoItem}
-              text={todoItem.title}
               name={todoItem.id}
               done={todoItem.done}
               variant="red"
             />
           );
         })}
-        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} text="" name="today_new" />
+        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} name="today_new" />
       </div>
     </div>
   );

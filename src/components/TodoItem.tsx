@@ -11,7 +11,6 @@ type Props = {
   addTodoItem: (todoText: string) => void;
   todo?: Todos;
   targetDate: string;
-  text: string;
   name: string;
   done?: boolean;
   variant?: "orange" | "yellow" | "red";
@@ -32,7 +31,9 @@ export const TodoItem: VFC<Props> = (props) => {
     refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
   });
   useEffect(() => {
-    setTodoText(props.text);
+    if (props.todo) {
+      setTodoText(props.todo.title);
+    }
     if (props.done === true) {
       setIsChecked(1);
     } else {
@@ -71,7 +72,10 @@ export const TodoItem: VFC<Props> = (props) => {
   const handleInputBlur = () => {
     setIsFocus(false);
     if (todoText.length === 0) {
-      setTodoText(props.text);
+      if (props.todo) {
+        setTodoText(props.todo.title);
+      }
+      // setTodoText(props.text);
     }
   };
 
