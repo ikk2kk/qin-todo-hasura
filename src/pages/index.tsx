@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Layout } from "src/components/layout";
 import { SomedayTodo } from "src/components/SomedayTodo";
 import { TodayContainer } from "src/components/TodayContainer";
-import { TodayTodo } from "src/components/TodayTodo";
+// import { TodayTodo } from "src/components/TodayTodo";
 import { TomorrowTodo } from "src/components/TomorrowTodo";
 
 type Items = {
@@ -160,7 +160,7 @@ const Home: NextPage = () => {
           onDragEnd={handleDragEnd}
         >
           <TodayContainer id="today" items={items.today} setItems={setItems} />
-          <TodayTodo />
+          {/* <TodayTodo /> */}
           <TomorrowTodo />
           <SomedayTodo />
         </DndContext>

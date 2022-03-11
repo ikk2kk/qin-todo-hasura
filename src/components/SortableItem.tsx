@@ -1,12 +1,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { ChangeEvent, VFC } from "react";
+import type { ChangeEvent, ReactNode, VFC } from "react";
 import { useState } from "react";
 
 type Props = {
   id: string;
   title: string;
-  // children: ReactNode;
+  children: ReactNode;
 };
 
 export const Item: VFC<Props> = (props) => {
@@ -28,7 +28,7 @@ export const SortableItem: VFC<Props> = (props) => {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={props.id} title={props.title} />
+      {props.children}
     </div>
   );
 };

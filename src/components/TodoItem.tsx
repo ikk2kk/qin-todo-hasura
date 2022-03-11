@@ -89,6 +89,7 @@ export const TodoItem: VFC<Props> = (props) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // console.log("123");
     if (todoText.length !== 0 && props.name.match("new")) {
       // props.addTodoItem(todoText);
       try {
@@ -101,6 +102,7 @@ export const TodoItem: VFC<Props> = (props) => {
 
       setTodoText("");
     } else if (todoText.length !== 0) {
+      // console.log("aaa");
       try {
         await updateTodo({
           // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -5,6 +5,7 @@ import { GET_TODOS } from "queries/queries";
 import type { Dispatch, SetStateAction, VFC } from "react";
 import { useEffect } from "react";
 import { SortableItem } from "src/components/SortableItem";
+import { TodoItem } from "src/components/TodoItem";
 import { TodoTitle } from "src/components/TodoTitle";
 import type { GetTodosQuery, Todos } from "types/generated/graphql";
 
@@ -19,7 +20,7 @@ type Props = {
   items: string[];
   setItems: Dispatch<SetStateAction<Items>>;
 };
-
+const TARGET_DATE = "today";
 export const TodayContainer: VFC<Props> = (props) => {
   const { data, error } = useQuery<GetTodosQuery>(GET_TODOS, {
     fetchPolicy: "cache-first",
@@ -62,12 +63,22 @@ export const TodayContainer: VFC<Props> = (props) => {
       <SortableContext id={props.id} items={props.items} strategy={verticalListSortingStrategy}>
         <div ref={setNodeRef} className="space-y-3">
           {props.items.map((id) => {
-            const filtered_todo = data?.todos.filter((d: Todos) => {
+            const todoItem = data?.todos.filter((d: Todos) => {
               return d.id === id;
             });
 
-            if (filtered_todo?.length !== 0 && filtered_todo) {
-              return <SortableItem key={id} id={id} title={filtered_todo[0].title} />;
+            if (todoItem?.length !== 0 && todoItem) {
+              return (
+                <SortableItem key={id} id={id} title={todoItem[0].title}>
+                  <TodoItem
+                    key={todoItem[0].id}
+                    todo={todoItem[0]}
+                    targetDate={TARGET_DATE}
+                    name={todoItem[0].id}
+                    variant="red"
+                  />
+                </SortableItem>
+              );
             } else {
               return null;
             }
@@ -81,7 +92,10 @@ export const TodayContainer: VFC<Props> = (props) => {
             : null} */}
         </div>
       </SortableContext>
-      <div>Add NewTask</div>
+
+      <div className="mt-3">
+        <TodoItem targetDate={TARGET_DATE} name="today_new" />
+      </div>
     </div>
   );
 };
