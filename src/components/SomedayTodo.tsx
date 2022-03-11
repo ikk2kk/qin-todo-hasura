@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_TODO, GET_TODOS } from "queries/queries";
+import { useQuery } from "@apollo/client";
+import { GET_TODOS } from "queries/queries";
 import { TodoItem } from "src/components/TodoItem";
 import { TodoTitle } from "src/components/TodoTitle";
 import type { GetTodosQuery } from "types/generated/graphql";
@@ -12,19 +12,6 @@ export const SomedayTodo = () => {
     fetchPolicy: "cache-first",
     variables: { target_date: TARGET_DATE },
   });
-  const [createTodo] = useMutation(CREATE_TODO, {
-    refetchQueries: [{ query: GET_TODOS, variables: { target_date: TARGET_DATE } }],
-  });
-
-  const addTodoItem = async (todoText: string) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      await createTodo({ variables: { title: todoText, target_date: TARGET_DATE, done: false } });
-    } catch (error) {
-      console.error(error);
-      alert("Fail add todo");
-    }
-  };
 
   if (error) {
     return (
@@ -41,17 +28,10 @@ export const SomedayTodo = () => {
       <div className="space-y-3">
         {data?.todos.map((todoItem) => {
           return (
-            <TodoItem
-              key={todoItem.id}
-              todo={todoItem}
-              targetDate={TARGET_DATE}
-              addTodoItem={addTodoItem}
-              name={todoItem.id}
-              variant="yellow"
-            />
+            <TodoItem key={todoItem.id} todo={todoItem} targetDate={TARGET_DATE} name={todoItem.id} variant="yellow" />
           );
         })}
-        <TodoItem targetDate={TARGET_DATE} addTodoItem={addTodoItem} name="tomorrow_new" />
+        <TodoItem targetDate={TARGET_DATE} name="tomorrow_new" />
       </div>
     </div>
   );

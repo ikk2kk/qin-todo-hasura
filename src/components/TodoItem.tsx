@@ -1,14 +1,13 @@
 import { useMutation } from "@apollo/client";
 import { DocumentDuplicateIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import { DELETE_TODO, DUPLICATE_TODO, GET_TODOS, UPDATE_TODO } from "queries/queries";
+import { CREATE_TODO, DELETE_TODO, DUPLICATE_TODO, GET_TODOS, UPDATE_TODO } from "queries/queries";
 import type { ChangeEvent, FormEvent, VFC } from "react";
 import { useEffect, useState } from "react";
 import { Input } from "src/components/Input";
 import type { Todos } from "types/generated/graphql";
 
 type Props = {
-  addTodoItem: (todoText: string) => void;
   todo?: Todos;
   targetDate: string;
   name: string;
@@ -20,12 +19,18 @@ export const TodoItem: VFC<Props> = (props) => {
   const [todoText, setTodoText] = useState("");
 
   const [isFocus, setIsFocus] = useState(false);
+
   const [updateTodo] = useMutation(UPDATE_TODO);
   const [deleteTodo] = useMutation(DELETE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
   });
-  const [createTodo] = useMutation(DUPLICATE_TODO, {
+
+  const [createTodo] = useMutation(CREATE_TODO, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
+  });
+  const [duplicateTodo] = useMutation(DUPLICATE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
   });
@@ -85,7 +90,15 @@ export const TodoItem: VFC<Props> = (props) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (todoText.length !== 0 && props.name.match("new")) {
-      props.addTodoItem(todoText);
+      // props.addTodoItem(todoText);
+      try {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        await createTodo({ variables: { title: todoText, target_date: props.targetDate, done: false } });
+      } catch (error) {
+        console.error(error);
+        alert("Fail add todo");
+      }
+
       setTodoText("");
     } else if (todoText.length !== 0) {
       try {
@@ -101,7 +114,7 @@ export const TodoItem: VFC<Props> = (props) => {
 
   const handleDuplicate = async () => {
     try {
-      await createTodo({
+      await duplicateTodo({
         variables: {
           title: props.todo?.title,
           // eslint-disable-next-line @typescript-eslint/naming-convention
