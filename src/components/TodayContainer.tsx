@@ -5,7 +5,8 @@ import { GET_TODOS } from "queries/queries";
 import type { Dispatch, SetStateAction, VFC } from "react";
 import { useEffect } from "react";
 import { SortableItem } from "src/components/SortableItem";
-import type { GetTodosQuery } from "types/generated/graphql";
+import { TodoTitle } from "src/components/TodoTitle";
+import type { GetTodosQuery, Todos } from "types/generated/graphql";
 
 type Items = {
   today: string[];
@@ -56,12 +57,28 @@ export const TodayContainer: VFC<Props> = (props) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 p-4 space-y-3 bg-gray-100">
+    <div className="flex flex-col flex-1 p-4  bg-red-100">
+      <TodoTitle title="今日する" className="mb-6 text-red-400 " />
       <SortableContext id={props.id} items={props.items} strategy={verticalListSortingStrategy}>
         <div ref={setNodeRef} className="space-y-3">
           {props.items.map((id) => {
-            return <SortableItem key={id} id={id} />;
+            const filtered_todo = data?.todos.filter((d: Todos) => {
+              return d.id === id;
+            });
+
+            if (filtered_todo?.length !== 0 && filtered_todo) {
+              return <SortableItem key={id} id={id} title={filtered_todo[0].title} />;
+            } else {
+              return null;
+            }
+
+            // return <SortableItem key={id} id={id} />;
           })}
+          {/* {data
+            ? data.todos.map((d) => {
+                return <SortableItem key={d.id} id={d.id} />;
+              })
+            : null} */}
         </div>
       </SortableContext>
       <div>Add NewTask</div>

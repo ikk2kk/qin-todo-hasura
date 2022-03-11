@@ -5,11 +5,12 @@ import { useState } from "react";
 
 type Props = {
   id: string;
+  title: string;
   // children: ReactNode;
 };
 
 export const Item: VFC<Props> = (props) => {
-  const [text, setText] = useState(props.id);
+  const [text, setText] = useState(props.title);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
@@ -27,7 +28,7 @@ export const SortableItem: VFC<Props> = (props) => {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={props.id} />
+      <Item id={props.id} title={props.title} />
     </div>
   );
 };
