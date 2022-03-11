@@ -16,21 +16,10 @@ export const TodayTodo = () => {
     refetchQueries: [{ query: GET_TODOS, variables: { target_date: TARGET_DATE } }],
   });
 
-  // const [todoItemList, setTodoItemList] = useState([
-  //   { id: "today0", text: "Next.jsのセットアップ" },
-  //   { id: "today1", text: "ESLintのインストール" },
-  // ]);
   const addTodoItem = async (todoText: string) => {
-    // alert("AddTodoItem");
-    // setTodoItemList((prev) => {
-    //   const id = "today" + todoItemList.length;
-    //   return [...prev, { id: id, text: todoText }];
-    // });
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       await createTodo({ variables: { title: todoText, target_date: TARGET_DATE, done: false } });
-      // alert("Add todo");
-      // reset();
     } catch (error) {
       console.error(error);
       alert("Fail add todo");
