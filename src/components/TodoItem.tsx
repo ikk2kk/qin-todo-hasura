@@ -75,7 +75,6 @@ export const TodoItem: VFC<Props> = (props) => {
       if (props.todo) {
         setTodoText(props.todo.title);
       }
-      // setTodoText(props.text);
     }
   };
 
@@ -88,9 +87,7 @@ export const TodoItem: VFC<Props> = (props) => {
     if (todoText.length !== 0 && props.name.match("new")) {
       props.addTodoItem(todoText);
       setTodoText("");
-      // console.log("new");
     } else if (todoText.length !== 0) {
-      // console.log("update");
       try {
         await updateTodo({
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -103,7 +100,6 @@ export const TodoItem: VFC<Props> = (props) => {
   };
 
   const handleDuplicate = async () => {
-    // alert("Duplicate " + props.name);
     try {
       await createTodo({
         variables: {
@@ -115,23 +111,16 @@ export const TodoItem: VFC<Props> = (props) => {
           created_at: props.todo?.created_at,
         },
       });
-      // alert("Add todo");
-      // reset();
     } catch (error) {
       console.error(error);
       alert("Fail duplicate todo");
     }
   };
   const handleTrash = async () => {
-    // alert("Trash " + props.name);
-
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       await deleteTodo({ variables: { id: props.name } });
-      // alert("Add todo");
-      // reset();
     } catch (error) {
-      // console.error(error);
       alert("Fail delete todo");
     }
   };
