@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import { DocumentDuplicateIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import { CREATE_TODO, DELETE_TODO, DUPLICATE_TODO, GET_TODOS, UPDATE_TODO } from "queries/queries";
-import type { ChangeEvent, FormEvent, VFC } from "react";
+import type { ChangeEvent, KeyboardEvent, VFC } from "react";
 import { useEffect, useState } from "react";
 import { Input } from "src/components/Input";
 import type { Todos } from "types/generated/graphql";
@@ -87,29 +87,59 @@ export const TodoItem: VFC<Props> = (props) => {
     return setTodoText(e.target.value);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // console.log("123");
-    if (todoText.length !== 0 && props.name.match("new")) {
-      // props.addTodoItem(todoText);
-      try {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        await createTodo({ variables: { title: todoText, target_date: props.targetDate, done: false } });
-      } catch (error) {
-        console.error(error);
-        alert("Fail add todo");
-      }
+  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   // console.log("123");
+  //   if (todoText.length !== 0 && props.name.match("new")) {
+  //     // props.addTodoItem(todoText);
+  //     try {
+  //       // eslint-disable-next-line @typescript-eslint/naming-convention
+  //       await createTodo({ variables: { title: todoText, target_date: props.targetDate, done: false } });
+  //     } catch (error) {
+  //       console.error(error);
+  //       alert("Fail add todo");
+  //     }
 
-      setTodoText("");
-    } else if (todoText.length !== 0) {
-      // console.log("aaa");
-      try {
-        await updateTodo({
+  //     setTodoText("");
+  //   } else if (todoText.length !== 0) {
+  //     // console.log("aaa");
+  //     try {
+  //       await updateTodo({
+  //         // eslint-disable-next-line @typescript-eslint/naming-convention
+  //         variables: { id: props.name, title: todoText, target_date: props.targetDate, done: isChecked ? true : false },
+  //       });
+  //     } catch (error) {
+  //       alert("更新失敗");
+  //     }
+  //   }
+  // };
+
+  const handleInputKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      if (todoText.length !== 0 && props.name.match("new")) {
+        try {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          variables: { id: props.name, title: todoText, target_date: props.targetDate, done: isChecked ? true : false },
-        });
-      } catch (error) {
-        alert("更新失敗");
+          await createTodo({ variables: { title: todoText, target_date: props.targetDate, done: false } });
+        } catch (error) {
+          console.error(error);
+          alert("Fail add todo");
+        }
+
+        setTodoText("");
+      } else if (todoText.length !== 0) {
+        try {
+          await updateTodo({
+            variables: {
+              id: props.name,
+              title: todoText,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              target_date: props.targetDate,
+              done: isChecked ? true : false,
+            },
+          });
+        } catch (error) {
+          alert("更新失敗");
+        }
       }
     }
   };
@@ -141,7 +171,7 @@ export const TodoItem: VFC<Props> = (props) => {
   };
 
   return (
-    <form className="flex items-center " onSubmit={handleSubmit}>
+    <div className="flex items-center ">
       <label className="mr-4 text-gray-800 hover:cursor-pointer" htmlFor={props.name}>
         <div className="flex items-center bg-green-100">
           <input
@@ -177,6 +207,7 @@ export const TodoItem: VFC<Props> = (props) => {
           type="text"
           placeholder="タスクを追加する"
           value={todoText}
+          onKeyDown={handleInputKeyDown}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
@@ -188,6 +219,6 @@ export const TodoItem: VFC<Props> = (props) => {
           </div>
         )}
       </div>
-    </form>
+    </div>
   );
 };
