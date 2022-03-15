@@ -30,6 +30,19 @@ export type Boolean_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars["Boolean"]>>;
 };
 
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type Int_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars["Int"]>;
+  _gt?: InputMaybe<Scalars["Int"]>;
+  _gte?: InputMaybe<Scalars["Int"]>;
+  _in?: InputMaybe<Array<Scalars["Int"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]>;
+  _lt?: InputMaybe<Scalars["Int"]>;
+  _lte?: InputMaybe<Scalars["Int"]>;
+  _neq?: InputMaybe<Scalars["Int"]>;
+  _nin?: InputMaybe<Array<Scalars["Int"]>>;
+};
+
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: InputMaybe<Scalars["String"]>;
@@ -104,12 +117,14 @@ export type Mutation_RootInsert_Todos_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_TodosArgs = {
+  _inc?: InputMaybe<Todos_Inc_Input>;
   _set?: InputMaybe<Todos_Set_Input>;
   where: Todos_Bool_Exp;
 };
 
 /** mutation root */
 export type Mutation_RootUpdate_Todos_By_PkArgs = {
+  _inc?: InputMaybe<Todos_Inc_Input>;
   _set?: InputMaybe<Todos_Set_Input>;
   pk_columns: Todos_Pk_Columns_Input;
 };
@@ -209,6 +224,7 @@ export type Todos = {
   created_at: Scalars["timestamptz"];
   done: Scalars["Boolean"];
   id: Scalars["uuid"];
+  order_index?: Maybe<Scalars["Int"]>;
   target_date: Scalars["String"];
   title: Scalars["String"];
   updated_at: Scalars["timestamptz"];
@@ -224,15 +240,29 @@ export type Todos_Aggregate = {
 /** aggregate fields of "todos" */
 export type Todos_Aggregate_Fields = {
   __typename?: "todos_aggregate_fields";
+  avg?: Maybe<Todos_Avg_Fields>;
   count: Scalars["Int"];
   max?: Maybe<Todos_Max_Fields>;
   min?: Maybe<Todos_Min_Fields>;
+  stddev?: Maybe<Todos_Stddev_Fields>;
+  stddev_pop?: Maybe<Todos_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Todos_Stddev_Samp_Fields>;
+  sum?: Maybe<Todos_Sum_Fields>;
+  var_pop?: Maybe<Todos_Var_Pop_Fields>;
+  var_samp?: Maybe<Todos_Var_Samp_Fields>;
+  variance?: Maybe<Todos_Variance_Fields>;
 };
 
 /** aggregate fields of "todos" */
 export type Todos_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Todos_Select_Column>>;
   distinct?: InputMaybe<Scalars["Boolean"]>;
+};
+
+/** aggregate avg on columns */
+export type Todos_Avg_Fields = {
+  __typename?: "todos_avg_fields";
+  order_index?: Maybe<Scalars["Float"]>;
 };
 
 /** Boolean expression to filter rows from the table "todos". All fields are combined with a logical 'AND'. */
@@ -243,6 +273,7 @@ export type Todos_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   done?: InputMaybe<Boolean_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  order_index?: InputMaybe<Int_Comparison_Exp>;
   target_date?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -254,11 +285,17 @@ export enum Todos_Constraint {
   TodosPkey = "todos_pkey",
 }
 
+/** input type for incrementing numeric columns in table "todos" */
+export type Todos_Inc_Input = {
+  order_index?: InputMaybe<Scalars["Int"]>;
+};
+
 /** input type for inserting data into table "todos" */
 export type Todos_Insert_Input = {
   created_at?: InputMaybe<Scalars["timestamptz"]>;
   done?: InputMaybe<Scalars["Boolean"]>;
   id?: InputMaybe<Scalars["uuid"]>;
+  order_index?: InputMaybe<Scalars["Int"]>;
   target_date?: InputMaybe<Scalars["String"]>;
   title?: InputMaybe<Scalars["String"]>;
   updated_at?: InputMaybe<Scalars["timestamptz"]>;
@@ -269,6 +306,7 @@ export type Todos_Max_Fields = {
   __typename?: "todos_max_fields";
   created_at?: Maybe<Scalars["timestamptz"]>;
   id?: Maybe<Scalars["uuid"]>;
+  order_index?: Maybe<Scalars["Int"]>;
   target_date?: Maybe<Scalars["String"]>;
   title?: Maybe<Scalars["String"]>;
   updated_at?: Maybe<Scalars["timestamptz"]>;
@@ -279,6 +317,7 @@ export type Todos_Min_Fields = {
   __typename?: "todos_min_fields";
   created_at?: Maybe<Scalars["timestamptz"]>;
   id?: Maybe<Scalars["uuid"]>;
+  order_index?: Maybe<Scalars["Int"]>;
   target_date?: Maybe<Scalars["String"]>;
   title?: Maybe<Scalars["String"]>;
   updated_at?: Maybe<Scalars["timestamptz"]>;
@@ -305,6 +344,7 @@ export type Todos_Order_By = {
   created_at?: InputMaybe<Order_By>;
   done?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  order_index?: InputMaybe<Order_By>;
   target_date?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -324,6 +364,8 @@ export enum Todos_Select_Column {
   /** column name */
   Id = "id",
   /** column name */
+  OrderIndex = "order_index",
+  /** column name */
   TargetDate = "target_date",
   /** column name */
   Title = "title",
@@ -336,9 +378,34 @@ export type Todos_Set_Input = {
   created_at?: InputMaybe<Scalars["timestamptz"]>;
   done?: InputMaybe<Scalars["Boolean"]>;
   id?: InputMaybe<Scalars["uuid"]>;
+  order_index?: InputMaybe<Scalars["Int"]>;
   target_date?: InputMaybe<Scalars["String"]>;
   title?: InputMaybe<Scalars["String"]>;
   updated_at?: InputMaybe<Scalars["timestamptz"]>;
+};
+
+/** aggregate stddev on columns */
+export type Todos_Stddev_Fields = {
+  __typename?: "todos_stddev_fields";
+  order_index?: Maybe<Scalars["Float"]>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Todos_Stddev_Pop_Fields = {
+  __typename?: "todos_stddev_pop_fields";
+  order_index?: Maybe<Scalars["Float"]>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Todos_Stddev_Samp_Fields = {
+  __typename?: "todos_stddev_samp_fields";
+  order_index?: Maybe<Scalars["Float"]>;
+};
+
+/** aggregate sum on columns */
+export type Todos_Sum_Fields = {
+  __typename?: "todos_sum_fields";
+  order_index?: Maybe<Scalars["Int"]>;
 };
 
 /** update columns of table "todos" */
@@ -350,12 +417,32 @@ export enum Todos_Update_Column {
   /** column name */
   Id = "id",
   /** column name */
+  OrderIndex = "order_index",
+  /** column name */
   TargetDate = "target_date",
   /** column name */
   Title = "title",
   /** column name */
   UpdatedAt = "updated_at",
 }
+
+/** aggregate var_pop on columns */
+export type Todos_Var_Pop_Fields = {
+  __typename?: "todos_var_pop_fields";
+  order_index?: Maybe<Scalars["Float"]>;
+};
+
+/** aggregate var_samp on columns */
+export type Todos_Var_Samp_Fields = {
+  __typename?: "todos_var_samp_fields";
+  order_index?: Maybe<Scalars["Float"]>;
+};
+
+/** aggregate variance on columns */
+export type Todos_Variance_Fields = {
+  __typename?: "todos_variance_fields";
+  order_index?: Maybe<Scalars["Float"]>;
+};
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
@@ -370,7 +457,9 @@ export type Uuid_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars["uuid"]>>;
 };
 
-export type GetTodosQueryVariables = Exact<{ [key: string]: never }>;
+export type GetTodosQueryVariables = Exact<{
+  target_date: Scalars["String"];
+}>;
 
 export type GetTodosQuery = {
   __typename?: "query_root";
@@ -382,6 +471,7 @@ export type GetTodosQuery = {
     done: boolean;
     created_at: any;
     updated_at: any;
+    order_index?: number | null;
   }>;
 };
 
@@ -389,6 +479,8 @@ export type CreateTodoMutationVariables = Exact<{
   title: Scalars["String"];
   target_date: Scalars["String"];
   done: Scalars["Boolean"];
+  created_at?: InputMaybe<Scalars["timestamptz"]>;
+  order_index: Scalars["Int"];
 }>;
 
 export type CreateTodoMutation = {
@@ -401,6 +493,7 @@ export type CreateTodoMutation = {
     done: boolean;
     created_at: any;
     updated_at: any;
+    order_index?: number | null;
   } | null;
 };
 
@@ -418,6 +511,7 @@ export type DeleteTodoMutation = {
     done: boolean;
     created_at: any;
     updated_at: any;
+    order_index?: number | null;
   } | null;
 };
 
@@ -426,6 +520,7 @@ export type UpdateTodoMutationVariables = Exact<{
   title: Scalars["String"];
   target_date: Scalars["String"];
   done: Scalars["Boolean"];
+  order_index: Scalars["Int"];
 }>;
 
 export type UpdateTodoMutation = {
@@ -438,6 +533,7 @@ export type UpdateTodoMutation = {
     done: boolean;
     created_at: any;
     updated_at: any;
+    order_index?: number | null;
   } | null;
 };
 
@@ -453,18 +549,20 @@ export type GetTodosSubscriptionSubscription = {
     done: boolean;
     created_at: any;
     updated_at: any;
+    order_index?: number | null;
   }>;
 };
 
 export const GetTodosDocument = gql`
-  query GetTodos {
-    todos(order_by: { created_at: desc }) {
+  query GetTodos($target_date: String!) {
+    todos(order_by: { created_at: asc }, where: { target_date: { _eq: $target_date } }) {
       id
       title
       target_date
       done
       created_at
       updated_at
+      order_index
     }
   }
 `;
@@ -481,10 +579,11 @@ export const GetTodosDocument = gql`
  * @example
  * const { data, loading, error } = useGetTodosQuery({
  *   variables: {
+ *      target_date: // value for 'target_date'
  *   },
  * });
  */
-export function useGetTodosQuery(baseOptions?: Apollo.QueryHookOptions<GetTodosQuery, GetTodosQueryVariables>) {
+export function useGetTodosQuery(baseOptions: Apollo.QueryHookOptions<GetTodosQuery, GetTodosQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetTodosQuery, GetTodosQueryVariables>(GetTodosDocument, options);
 }
@@ -496,14 +595,29 @@ export type GetTodosQueryHookResult = ReturnType<typeof useGetTodosQuery>;
 export type GetTodosLazyQueryHookResult = ReturnType<typeof useGetTodosLazyQuery>;
 export type GetTodosQueryResult = Apollo.QueryResult<GetTodosQuery, GetTodosQueryVariables>;
 export const CreateTodoDocument = gql`
-  mutation CreateTodo($title: String!, $target_date: String!, $done: Boolean!) {
-    insert_todos_one(object: { title: $title, target_date: $target_date, done: $done }) {
+  mutation CreateTodo(
+    $title: String!
+    $target_date: String!
+    $done: Boolean!
+    $created_at: timestamptz
+    $order_index: Int!
+  ) {
+    insert_todos_one(
+      object: {
+        title: $title
+        target_date: $target_date
+        done: $done
+        created_at: $created_at
+        order_index: $order_index
+      }
+    ) {
       id
       title
       target_date
       done
       created_at
       updated_at
+      order_index
     }
   }
 `;
@@ -525,6 +639,8 @@ export type CreateTodoMutationFn = Apollo.MutationFunction<CreateTodoMutation, C
  *      title: // value for 'title'
  *      target_date: // value for 'target_date'
  *      done: // value for 'done'
+ *      created_at: // value for 'created_at'
+ *      order_index: // value for 'order_index'
  *   },
  * });
  */
@@ -546,6 +662,7 @@ export const DeleteTodoDocument = gql`
       done
       created_at
       updated_at
+      order_index
     }
   }
 `;
@@ -578,14 +695,18 @@ export type DeleteTodoMutationHookResult = ReturnType<typeof useDeleteTodoMutati
 export type DeleteTodoMutationResult = Apollo.MutationResult<DeleteTodoMutation>;
 export type DeleteTodoMutationOptions = Apollo.BaseMutationOptions<DeleteTodoMutation, DeleteTodoMutationVariables>;
 export const UpdateTodoDocument = gql`
-  mutation UpdateTodo($id: uuid!, $title: String!, $target_date: String!, $done: Boolean!) {
-    update_todos_by_pk(pk_columns: { id: $id }, _set: { title: $title, target_date: $target_date, done: $done }) {
+  mutation UpdateTodo($id: uuid!, $title: String!, $target_date: String!, $done: Boolean!, $order_index: Int!) {
+    update_todos_by_pk(
+      pk_columns: { id: $id }
+      _set: { title: $title, target_date: $target_date, done: $done, order_index: $order_index }
+    ) {
       id
       title
       target_date
       done
       created_at
       updated_at
+      order_index
     }
   }
 `;
@@ -608,6 +729,7 @@ export type UpdateTodoMutationFn = Apollo.MutationFunction<UpdateTodoMutation, U
  *      title: // value for 'title'
  *      target_date: // value for 'target_date'
  *      done: // value for 'done'
+ *      order_index: // value for 'order_index'
  *   },
  * });
  */
@@ -629,6 +751,7 @@ export const GetTodosSubscriptionDocument = gql`
       done
       created_at
       updated_at
+      order_index
     }
   }
 `;
