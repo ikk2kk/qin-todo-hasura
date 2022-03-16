@@ -1,7 +1,7 @@
 import { makeVar } from "@apollo/client";
 import type { Todos } from "types/generated/graphql";
 
-type TodayTodoDicById = {
+type IdTodoDic = {
   [key: string]: Todos;
 };
 
@@ -12,4 +12,4 @@ type TodoDic = {
 };
 
 export const TodoDicVar = makeVar<TodoDic>({ today: [], tomorrow: [], someday: [] });
-export const TodayTodoDicById = makeVar<TodayTodoDicById>({});
+export const IdTodoDicVar = makeVar<IdTodoDic>({});
