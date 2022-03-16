@@ -9,15 +9,15 @@ import type { Todos } from "types/generated/graphql";
 
 type Props = {
   todo?: Todos;
-  targetDate: string;
+  targetDate: "today" | "tomorrow" | "someday";
   name: string;
   variant?: "orange" | "yellow" | "red";
+  todoLength: number;
 };
 
 export const TodoItem: VFC<Props> = (props) => {
   const [isChecked, setIsChecked] = useState<number>(0);
   const [todoText, setTodoText] = useState("");
-
   const [isFocus, setIsFocus] = useState(false);
 
   const [updateTodo] = useMutation(UPDATE_TODO);
@@ -51,8 +51,15 @@ export const TodoItem: VFC<Props> = (props) => {
       setIsChecked(0);
       try {
         await updateTodo({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          variables: { id: props.name, title: todoText, target_date: props.targetDate, done: false },
+          variables: {
+            id: props.name,
+            title: todoText,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            target_date: props.targetDate,
+            done: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            order_index: props.todo?.order_index,
+          },
         });
       } catch (error) {
         alert("更新失敗");
@@ -61,8 +68,15 @@ export const TodoItem: VFC<Props> = (props) => {
       setIsChecked(1);
       try {
         await updateTodo({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          variables: { id: props.name, title: todoText, target_date: props.targetDate, done: true },
+          variables: {
+            id: props.name,
+            title: todoText,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            target_date: props.targetDate,
+            done: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            order_index: props.todo?.order_index,
+          },
         });
       } catch (error) {
         alert("更新失敗");
@@ -87,39 +101,20 @@ export const TodoItem: VFC<Props> = (props) => {
     return setTodoText(e.target.value);
   };
 
-  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   // console.log("123");
-  //   if (todoText.length !== 0 && props.name.match("new")) {
-  //     // props.addTodoItem(todoText);
-  //     try {
-  //       // eslint-disable-next-line @typescript-eslint/naming-convention
-  //       await createTodo({ variables: { title: todoText, target_date: props.targetDate, done: false } });
-  //     } catch (error) {
-  //       console.error(error);
-  //       alert("Fail add todo");
-  //     }
-
-  //     setTodoText("");
-  //   } else if (todoText.length !== 0) {
-  //     // console.log("aaa");
-  //     try {
-  //       await updateTodo({
-  //         // eslint-disable-next-line @typescript-eslint/naming-convention
-  //         variables: { id: props.name, title: todoText, target_date: props.targetDate, done: isChecked ? true : false },
-  //       });
-  //     } catch (error) {
-  //       alert("更新失敗");
-  //     }
-  //   }
-  // };
-
   const handleInputKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (todoText.length !== 0 && props.name.match("new")) {
         try {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          await createTodo({ variables: { title: todoText, target_date: props.targetDate, done: false } });
+          await createTodo({
+            variables: {
+              title: todoText,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              target_date: props.targetDate,
+              done: false,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              order_index: props.todoLength,
+            },
+          });
         } catch (error) {
           console.error(error);
           alert("Fail add todo");
@@ -135,6 +130,8 @@ export const TodoItem: VFC<Props> = (props) => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               target_date: props.targetDate,
               done: isChecked ? true : false,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              order_index: props.todo?.order_index,
             },
           });
         } catch (error) {
@@ -154,6 +151,8 @@ export const TodoItem: VFC<Props> = (props) => {
           done: props.todo?.done,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           created_at: props.todo?.created_at,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          order_index: props.todo?.order_index,
         },
       });
     } catch (error) {

@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_TODOS = gql`
   query GetTodos($target_date: String!) {
-    todos(order_by: { created_at: asc }, where: { target_date: { _eq: $target_date } }) {
+    todos(order_by: { order_index: asc }, where: { target_date: { _eq: $target_date } }) {
       id
       title
       target_date
@@ -23,6 +23,23 @@ export const CREATE_TODO = gql`
       created_at
       updated_at
       order_index
+    }
+  }
+`;
+
+export const CREATE_TODOS = gql`
+  mutation CreateTodos($objects: [todos_insert_input!]!) {
+    insert_todos(on_conflict: { constraint: todos_pkey, update_columns: order_index }, objects: $objects) {
+      affected_rows
+      returning {
+        id
+        title
+        target_date
+        done
+        created_at
+        updated_at
+        order_index
+      }
     }
   }
 `;

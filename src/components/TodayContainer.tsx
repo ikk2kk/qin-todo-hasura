@@ -14,13 +14,18 @@ type Items = {
   tomorrow: string[];
   someday: string[];
 };
-
+type TodoListObject = {
+  today: Todos[];
+  tomorrow: Todos[];
+  someday: Todos[];
+};
 type Props = {
   id: string;
   items: string[];
   setItems: Dispatch<SetStateAction<Items>>;
+  setTodoListObj: Dispatch<SetStateAction<TodoListObject>>;
 };
-const TARGET_DATE = "today";
+const TARGET_DATE: "today" | "tomorrow" | "someday" = "today";
 export const TodayContainer: VFC<Props> = (props) => {
   const { data, error } = useQuery<GetTodosQuery>(GET_TODOS, {
     fetchPolicy: "cache-first",
@@ -31,12 +36,14 @@ export const TodayContainer: VFC<Props> = (props) => {
   const { setNodeRef } = useDroppable({ id: props.id });
 
   useEffect(() => {
-    // const ids = data?.todos.map((todo) => {
-    //   return todo.id;
-    // });
-    // props.setItems((prev) => {
-    //   return { today: ids as string[], tomorrow: prev.tomorrow, someday: prev.someday };
-    // });
+    props.setTodoListObj((prev) => {
+      if (data) {
+        return { ...prev, today: data.todos };
+      } else {
+        return { ...prev };
+      }
+    });
+
     props.setItems((prev) => {
       if (data) {
         const ids = data.todos.map((todo) => {
@@ -76,6 +83,7 @@ export const TodayContainer: VFC<Props> = (props) => {
                     targetDate={TARGET_DATE}
                     name={todoItem[0].id}
                     variant="red"
+                    todoLength={data ? data.todos.length : 0}
                   />
                 </SortableItem>
               );
@@ -94,7 +102,7 @@ export const TodayContainer: VFC<Props> = (props) => {
       </SortableContext>
 
       <div className="mt-3">
-        <TodoItem targetDate={TARGET_DATE} name="today_new" />
+        <TodoItem targetDate={TARGET_DATE} name="today_new" todoLength={data ? data.todos.length : 0} />
       </div>
     </div>
   );

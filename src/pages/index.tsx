@@ -1,3 +1,4 @@
+import { useMutation } from "@apollo/client";
 import type { DragEndEvent, DragOverEvent, DragStartEvent, Over } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
 import { closestCorners } from "@dnd-kit/core";
@@ -5,17 +6,25 @@ import { KeyboardSensor, MouseSensor, PointerSensor, useSensor, useSensors } fro
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { CREATE_TODOS, GET_TODOS } from "queries/queries";
+import { useEffect, useState } from "react";
 import { Layout } from "src/components/layout";
 import { SomedayTodo } from "src/components/SomedayTodo";
 import { TodayContainer } from "src/components/TodayContainer";
 // import { TodayTodo } from "src/components/TodayTodo";
 import { TomorrowTodo } from "src/components/TomorrowTodo";
+import type { Todos } from "types/generated/graphql";
 
 type Items = {
   today: string[];
   tomorrow: string[];
   someday: string[];
+};
+
+type TodoListObject = {
+  today: Todos[];
+  tomorrow: Todos[];
+  someday: Todos[];
 };
 
 type Categories = "today" | "tomorrow" | "someday";
@@ -26,6 +35,18 @@ const Home: NextPage = () => {
     tomorrow: ["4", "5", "6"],
     someday: ["7", "8", "9"],
   });
+
+  const [todoListObj, setTodoListObj] = useState<TodoListObject>({
+    today: [],
+    tomorrow: [],
+    someday: [],
+  });
+  const [createTodos] = useMutation(CREATE_TODOS, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    refetchQueries: [{ query: GET_TODOS, variables: { target_date: "today" } }],
+  });
+  // const [createTodos] = useMutation(CREATE_TODOS);
+  const [isIndexChanged, setIsIndexChanged] = useState(false);
 
   const [_, setActiveId] = useState<string | null>();
   const sensors = useSensors(
@@ -45,6 +66,62 @@ const Home: NextPage = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  // console.log(todoListObj);
+
+  const handleTodos = async (sorted_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[]) => {
+    // Batch Write
+    try {
+      await createTodos({
+        variables: {
+          objects: sorted_items,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Fail Upsert");
+    }
+  };
+  useEffect(() => {
+    if (isIndexChanged) {
+      // todoListObj => {id: Todo}
+      const dic: { [key: string]: Todos } = {};
+      todoListObj["today"].forEach((e) => {
+        return (dic[e.id] = e);
+      });
+      // console.log(dic);
+      //
+      const sorted_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] = items["today"].map(
+        (e, index) => {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          // return { ...dic[e], order_index: index };
+          return {
+            id: dic[e].id,
+            title: dic[e].title,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            target_date: dic[e].target_date,
+            done: dic[e].done,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            order_index: index,
+          };
+        }
+      );
+      // console.log(sorted_items);
+      // Batch Write
+      handleTodos(sorted_items);
+      // try {
+      //   await createTodos({
+      //     variables: {
+      //       objects: sorted_items
+      //     }
+      //   })
+      // } catch(error) {
+      //   console.error(error)
+      //   alert("Fail Upsert")
+      // }
+
+      setIsIndexChanged(false);
+    }
+  }, [items, isIndexChanged]);
 
   const findContainer = (id: string) => {
     if (id in items) {
@@ -91,12 +168,6 @@ const Home: NextPage = () => {
         newIndex = overItems.length + 1;
       } else {
         const isBelowLastItem = 0;
-        // if (draggingRect) {
-        //   isBelowLastItem =
-        //     over &&
-        //     overIndex === overItems.length - 1 &&
-        //     draggingRect.offsetTop > over.rect.offsetTop + over.rect.height;
-        // }
 
         const modifier = isBelowLastItem ? 1 : 0;
 
@@ -140,11 +211,12 @@ const Home: NextPage = () => {
           [overContainer]: arrayMove(items[overContainer as Categories], activeIndex, overIndex),
         };
       });
+      setIsIndexChanged(true);
     }
-
     setActiveId(null);
   };
 
+  // console.log(items);
   return (
     <Layout>
       <Head>
@@ -159,7 +231,7 @@ const Home: NextPage = () => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <TodayContainer id="today" items={items.today} setItems={setItems} />
+          <TodayContainer id="today" items={items.today} setItems={setItems} setTodoListObj={setTodoListObj} />
           {/* <TodayTodo /> */}
           <TomorrowTodo />
           <SomedayTodo />
