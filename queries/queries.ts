@@ -13,6 +13,20 @@ export const GET_TODOS = gql`
     }
   }
 `;
+export const GET_TODOS_ALL = gql`
+  query GetTodos {
+    todos(order_by: { order_index: asc }) {
+      id
+      title
+      target_date
+      done
+      created_at
+      updated_at
+      order_index
+    }
+  }
+`;
+
 export const CREATE_TODO = gql`
   mutation CreateTodo($title: String!, $target_date: String!, $done: Boolean!, $order_index: Int!) {
     insert_todos_one(object: { title: $title, target_date: $target_date, done: $done, order_index: $order_index }) {
