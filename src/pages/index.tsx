@@ -10,7 +10,8 @@ import { CREATE_TODOS, GET_TODOS_ALL } from "queries/queries";
 import { useEffect, useState } from "react";
 import { IdTodoDicVar } from "src/cache";
 import { Layout } from "src/components/layout";
-import { SomedayTodo } from "src/components/SomedayTodo";
+import { SomedayContainer } from "src/components/SomedayContainer";
+// import { SomedayTodo } from "src/components/SomedayTodo";
 import { TodayContainer } from "src/components/TodayContainer";
 import { TomorrowContainer } from "src/components/TomorrowContainer";
 // import { TodayContainer } from "src/components/TodayContainer";
@@ -161,8 +162,22 @@ const Home: NextPage = () => {
             order_index: index,
           };
         });
+      const sorted_someday_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] =
+        idListByCategory["someday"].map((e, index) => {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          return {
+            id: idTodoDic[e].id,
+            title: idTodoDic[e].title,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            target_date: "someday",
+            // target_date: idTodoDic[e].target_date,
+            done: idTodoDic[e].done,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            order_index: index,
+          };
+        });
 
-      const sorted_items = [...sorted_today_items, ...sorted_tomorrow_items];
+      const sorted_items = [...sorted_today_items, ...sorted_tomorrow_items, ...sorted_someday_items];
       // console.log("sorted_items", sorted_items);
 
       // Batch Write
@@ -293,7 +308,8 @@ const Home: NextPage = () => {
           {/* <TodayTodo /> */}
           {/* <TomorrowTodo /> */}
           <TomorrowContainer id="tomorrow" items={idListByCategory.tomorrow} />
-          <SomedayTodo />
+          <SomedayContainer id="someday" items={idListByCategory.someday} />
+          {/* <SomedayTodo /> */}
         </DndContext>
       </div>
     </Layout>
