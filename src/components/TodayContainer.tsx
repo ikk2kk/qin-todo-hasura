@@ -6,31 +6,13 @@ import { IdTodoDicVar } from "src/cache";
 import { SortableItem } from "src/components/SortableItem";
 import { TodoItem } from "src/components/TodoItem";
 import { TodoTitle } from "src/components/TodoTitle";
-// import type { Todos } from "types/generated/graphql";
 
-// type Items = {
-//   today: string[];
-//   tomorrow: string[];
-//   someday: string[];
-// };
-// type TodoListObject = {
-//   today: Todos[];
-//   tomorrow: Todos[];
-//   someday: Todos[];
-// };
 type Props = {
   id: string;
   items: string[];
-  // setItems: Dispatch<SetStateAction<Items>>;
-  // setTodoListObj: Dispatch<SetStateAction<TodoListObject>>;
 };
 const TARGET_DATE: "today" | "tomorrow" | "someday" = "today";
 export const TodayContainer: VFC<Props> = (props) => {
-  // const { data, error } = useQuery<GetTodosQuery>(GET_TODOS, {
-  //   fetchPolicy: "cache-first",
-  //   // eslint-disable-next-line @typescript-eslint/naming-convention
-  //   variables: { target_date: props.id },
-  // });
   const idTodoDic = useReactiveVar(IdTodoDicVar);
   const { setNodeRef } = useDroppable({ id: props.id });
 

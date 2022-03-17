@@ -11,23 +11,13 @@ import { useEffect, useState } from "react";
 import { IdTodoDicVar } from "src/cache";
 import { Layout } from "src/components/layout";
 import { SomedayContainer } from "src/components/SomedayContainer";
-// import { SomedayTodo } from "src/components/SomedayTodo";
 import { TodayContainer } from "src/components/TodayContainer";
 import { TomorrowContainer } from "src/components/TomorrowContainer";
-// import { TodayContainer } from "src/components/TodayContainer";
-// import { TomorrowContainer } from "src/components/TomorrowContainer";
-// import { TomorrowTodo } from "src/components/TomorrowTodo";
 import type { GetTodosQuery, Todos } from "types/generated/graphql";
 
 type IdListByCategory = {
   [key in Categories]: string[];
 };
-
-// type TodoListObject = {
-//   today: Todos[];
-//   tomorrow: Todos[];
-//   someday: Todos[];
-// };
 
 type Categories = "today" | "tomorrow" | "someday";
 
@@ -77,23 +67,10 @@ const Home: NextPage = () => {
     }
   }, [data, loading]);
 
-  // const [items, setItems] = useState<Items>({
-  //   today: ["1", "2", "3"],
-  //   tomorrow: ["4", "5", "6"],
-  //   someday: ["7", "8", "9"],
-  // });
-
-  // const [todoListObj, setTodoListObj] = useState<TodoListObject>({
-  //   today: [],
-  //   tomorrow: [],
-  //   someday: [],
-  // });
   const [createTodos] = useMutation(CREATE_TODOS, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     refetchQueries: [{ query: GET_TODOS_ALL }],
   });
-  // const [createTodos] = useMutation(CREATE_TODOS);
-  // const [createTodos] = useMutation(CREATE_TODOS);
   const [isIndexChanged, setIsIndexChanged] = useState(false);
 
   const [_, setActiveId] = useState<string | null>();
@@ -132,7 +109,6 @@ const Home: NextPage = () => {
   };
   useEffect(() => {
     if (isIndexChanged) {
-      // const sorted_today_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] =
       const sorted_today_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] =
         idListByCategory["today"].map((e, index) => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -305,11 +281,8 @@ const Home: NextPage = () => {
           onDragEnd={handleDragEnd}
         >
           <TodayContainer id="today" items={idListByCategory.today} />
-          {/* <TodayTodo /> */}
-          {/* <TomorrowTodo /> */}
           <TomorrowContainer id="tomorrow" items={idListByCategory.tomorrow} />
           <SomedayContainer id="someday" items={idListByCategory.someday} />
-          {/* <SomedayTodo /> */}
         </DndContext>
       </div>
     </Layout>
