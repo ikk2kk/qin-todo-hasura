@@ -43,7 +43,10 @@ export const CREATE_TODO = gql`
 
 export const CREATE_TODOS = gql`
   mutation CreateTodos($objects: [todos_insert_input!]!) {
-    insert_todos(on_conflict: { constraint: todos_pkey, update_columns: order_index }, objects: $objects) {
+    insert_todos(
+      on_conflict: { constraint: todos_pkey, update_columns: [order_index, target_date] }
+      objects: $objects
+    ) {
       affected_rows
       returning {
         id
