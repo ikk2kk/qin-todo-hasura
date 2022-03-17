@@ -12,29 +12,21 @@ import { IdTodoDicVar } from "src/cache";
 import { Layout } from "src/components/layout";
 import { SomedayTodo } from "src/components/SomedayTodo";
 import { TodayContainer } from "src/components/TodayContainer";
-// import { TodayTodo } from "src/components/TodayTodo";
-import { TomorrowTodo } from "src/components/TomorrowTodo";
+import { TomorrowContainer } from "src/components/TomorrowContainer";
+// import { TodayContainer } from "src/components/TodayContainer";
+// import { TomorrowContainer } from "src/components/TomorrowContainer";
+// import { TomorrowTodo } from "src/components/TomorrowTodo";
 import type { GetTodosQuery, Todos } from "types/generated/graphql";
-
-// type Items = {
-//   today: string[];
-//   tomorrow: string[];
-//   someday: string[];
-// };
 
 type IdListByCategory = {
   [key in Categories]: string[];
 };
 
-// type TodoListByCategory = {
-//   [key in Categories]: Todos[];
+// type TodoListObject = {
+//   today: Todos[];
+//   tomorrow: Todos[];
+//   someday: Todos[];
 // };
-
-type TodoListObject = {
-  today: Todos[];
-  tomorrow: Todos[];
-  someday: Todos[];
-};
 
 type Categories = "today" | "tomorrow" | "someday";
 
@@ -90,15 +82,16 @@ const Home: NextPage = () => {
   //   someday: ["7", "8", "9"],
   // });
 
-  const [todoListObj, setTodoListObj] = useState<TodoListObject>({
-    today: [],
-    tomorrow: [],
-    someday: [],
-  });
+  // const [todoListObj, setTodoListObj] = useState<TodoListObject>({
+  //   today: [],
+  //   tomorrow: [],
+  //   someday: [],
+  // });
   const [createTodos] = useMutation(CREATE_TODOS, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     refetchQueries: [{ query: GET_TODOS_ALL }],
   });
+  // const [createTodos] = useMutation(CREATE_TODOS);
   // const [createTodos] = useMutation(CREATE_TODOS);
   const [isIndexChanged, setIsIndexChanged] = useState(false);
 
@@ -123,6 +116,7 @@ const Home: NextPage = () => {
   // console.log(todoListObj);
 
   const handleTodos = async (sorted_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[]) => {
+    // console.log("handleTodos");
     // Batch Write
     try {
       await createTodos({
@@ -137,27 +131,43 @@ const Home: NextPage = () => {
   };
   useEffect(() => {
     if (isIndexChanged) {
-      const dic: { [key: string]: Todos } = {};
-      todoListObj["today"].forEach((e) => {
-        return (dic[e.id] = e);
-      });
-      const sorted_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] = idListByCategory[
-        "today"
-      ].map((e, index) => {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        return {
-          id: dic[e].id,
-          title: dic[e].title,
+      // const sorted_today_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] =
+      const sorted_today_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] =
+        idListByCategory["today"].map((e, index) => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          target_date: dic[e].target_date,
-          done: dic[e].done,
+          return {
+            id: idTodoDic[e].id,
+            title: idTodoDic[e].title,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            target_date: "today",
+            // target_date: idTodoDic[e].target_date,
+            done: idTodoDic[e].done,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            order_index: index,
+          };
+        });
+
+      const sorted_tomorrow_items: Pick<Todos, "id" | "title" | "target_date" | "done" | "order_index">[] =
+        idListByCategory["tomorrow"].map((e, index) => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          order_index: index,
-        };
-      });
+          return {
+            id: idTodoDic[e].id,
+            title: idTodoDic[e].title,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            target_date: "tomorrow",
+            // target_date: idTodoDic[e].target_date,
+            done: idTodoDic[e].done,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            order_index: index,
+          };
+        });
+
+      const sorted_items = [...sorted_today_items, ...sorted_tomorrow_items];
+      // console.log("sorted_items", sorted_items);
+
       // Batch Write
       handleTodos(sorted_items);
-
+      // console.log(idListByCategory);
       setIsIndexChanged(false);
     }
   }, [idListByCategory, isIndexChanged]);
@@ -245,6 +255,7 @@ const Home: NextPage = () => {
 
     if (activeIndex !== overIndex) {
       setIdListByCategory((items) => {
+        // console.log("koko");
         return {
           ...items,
           [overContainer]: arrayMove(items[overContainer as Categories], activeIndex, overIndex),
@@ -252,6 +263,8 @@ const Home: NextPage = () => {
       });
       setIsIndexChanged(true);
     }
+    // console.log("ddd");
+    setIsIndexChanged(true);
     setActiveId(null);
   };
   if (error) {
@@ -276,14 +289,10 @@ const Home: NextPage = () => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <TodayContainer
-            id="today"
-            items={idListByCategory.today}
-            setItems={setIdListByCategory}
-            setTodoListObj={setTodoListObj}
-          />
+          <TodayContainer id="today" items={idListByCategory.today} />
           {/* <TodayTodo /> */}
-          <TomorrowTodo />
+          {/* <TomorrowTodo /> */}
+          <TomorrowContainer id="tomorrow" items={idListByCategory.tomorrow} />
           <SomedayTodo />
         </DndContext>
       </div>
