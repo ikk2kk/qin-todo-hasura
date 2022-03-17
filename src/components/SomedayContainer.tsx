@@ -17,7 +17,7 @@ export const SomedayContainer: VFC<Props> = (props) => {
   const { setNodeRef } = useDroppable({ id: props.id });
 
   return (
-    <div className="flex flex-col flex-1 p-4  bg-yellow-100">
+    <div className="flex flex-col flex-1 p-4 ">
       <TodoTitle title="今度する" className="mb-6 text-yellow-400 " />
       <SortableContext id={props.id} items={props.items} strategy={verticalListSortingStrategy}>
         <div ref={setNodeRef} className="space-y-3">
