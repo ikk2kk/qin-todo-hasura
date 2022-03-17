@@ -1,9 +1,11 @@
 import { useMutation } from "@apollo/client";
+// import { useReactiveVar } from "@apollo/client";
 import { DocumentDuplicateIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import { CREATE_TODO, DELETE_TODO, DUPLICATE_TODO, GET_TODOS, UPDATE_TODO } from "queries/queries";
+import { CREATE_TODO, DELETE_TODO, DUPLICATE_TODO, GET_TODOS_ALL, UPDATE_TODO } from "queries/queries";
 import type { ChangeEvent, KeyboardEvent, VFC } from "react";
 import { useEffect, useState } from "react";
+// import { IdTodoDicVar } from "src/cache";
 import { Input } from "src/components/Input";
 import type { Todos } from "types/generated/graphql";
 
@@ -19,21 +21,22 @@ export const TodoItem: VFC<Props> = (props) => {
   const [isChecked, setIsChecked] = useState<number>(0);
   const [todoText, setTodoText] = useState("");
   const [isFocus, setIsFocus] = useState(false);
-
+  // const idTodoDic = useReactiveVar(IdTodoDicVar);
   const [updateTodo] = useMutation(UPDATE_TODO);
   const [deleteTodo] = useMutation(DELETE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
+    refetchQueries: [{ query: GET_TODOS_ALL }],
   });
 
   const [createTodo] = useMutation(CREATE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
+    refetchQueries: [{ query: GET_TODOS_ALL }],
   });
   const [duplicateTodo] = useMutation(DUPLICATE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    refetchQueries: [{ query: GET_TODOS, variables: { target_date: props.targetDate } }],
+    refetchQueries: [{ query: GET_TODOS_ALL }],
   });
+  // console.log("TodoItem", idTodoDic);
   useEffect(() => {
     if (props.todo) {
       setTodoText(props.todo.title);
