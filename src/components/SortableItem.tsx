@@ -1,22 +1,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { ChangeEvent, ReactNode, VFC } from "react";
-import { useState } from "react";
+import type { ReactNode, VFC } from "react";
 
 type Props = {
   id: string;
   title: string;
   children: ReactNode;
-};
-
-export const Item: VFC<Props> = (props) => {
-  const [text, setText] = useState(props.title);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  };
-
-  return <input className="w-full" type="text" value={text} onChange={handleChange} />;
 };
 
 export const SortableItem: VFC<Props> = (props) => {
