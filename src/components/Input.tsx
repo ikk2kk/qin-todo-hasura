@@ -20,10 +20,10 @@ export const Input: VFC<InputProps> = (props) => {
             disabled={props.linethrough === 1 ? true : false}
             id={props.name}
             className={clsx(
-              `pr-1 w-full focus:placeholder:text-transparent rounded-sm border-none focus:outline-none caret-orange-500 ${
+              `pr-1 w-full focus:placeholder:text-transparent bg-transparent rounded-sm border-none focus:outline-none caret-orange-500 ${
                 props.prefix ? "pl-10" : ""
               }`,
-              { "text-gray-400 line-through bg-white": props.linethrough === 1 },
+              { "text-gray-400 line-through ": props.linethrough === 1 },
               { "caret-orange-500": props.variant === "orange" },
               { "caret-yellow-400": props.variant === "yellow" },
               { "caret-red-500": props.variant === "red" }

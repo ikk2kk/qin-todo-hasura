@@ -178,7 +178,7 @@ export const TodoItem: VFC<Props> = (props) => {
   return (
     <div className="flex items-center ">
       <label className="mr-4 text-gray-800 hover:cursor-pointer" htmlFor={props.name}>
-        <div className="flex items-center bg-green-100">
+        <div className="flex items-center bg-transparent">
           <input
             type="checkbox"
             className={clsx(
@@ -203,7 +203,7 @@ export const TodoItem: VFC<Props> = (props) => {
         </div>
       </label>
 
-      <div className="group container relative">
+      <div className="group container relative bg-transparent">
         <Input
           label=""
           linethrough={isChecked}
