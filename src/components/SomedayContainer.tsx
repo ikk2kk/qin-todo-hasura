@@ -42,7 +42,12 @@ export const SomedayContainer: VFC<Props> = (props) => {
       </SortableContext>
 
       <div className="mt-3">
-        <TodoItem targetDate={TARGET_DATE} name="someday_new" todoLength={props.items ? props.items.length : 0} />
+        <TodoItem
+          targetDate={TARGET_DATE}
+          name="someday_new"
+          todoLength={props.items ? props.items.length : 0}
+          variant="yellow"
+        />
       </div>
     </div>
   );
