@@ -1,12 +1,10 @@
 import { useMutation } from "@apollo/client";
-// import { useReactiveVar } from "@apollo/client";
 import { DocumentDuplicateIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import { CREATE_TODO, DELETE_TODO, DUPLICATE_TODO, GET_TODOS_ALL, UPDATE_TODO } from "queries/queries";
 import type { ChangeEvent, KeyboardEvent, VFC } from "react";
 import { useEffect, useState } from "react";
-// import { IdTodoDicVar } from "src/cache";
-import { Input } from "src/components/Input";
+import { Textarea } from "src/components/Textarea";
 import type { Todos } from "types/generated/graphql";
 
 type Props = {
@@ -21,7 +19,6 @@ export const TodoItem: VFC<Props> = (props) => {
   const [isChecked, setIsChecked] = useState<number>(0);
   const [todoText, setTodoText] = useState("");
   const [isFocus, setIsFocus] = useState(false);
-  // const idTodoDic = useReactiveVar(IdTodoDicVar);
   const [updateTodo] = useMutation(UPDATE_TODO);
   const [deleteTodo] = useMutation(DELETE_TODO, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -36,7 +33,7 @@ export const TodoItem: VFC<Props> = (props) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     refetchQueries: [{ query: GET_TODOS_ALL }],
   });
-  // console.log("TodoItem", idTodoDic);
+
   useEffect(() => {
     if (props.todo) {
       setTodoText(props.todo.title);
@@ -48,7 +45,6 @@ export const TodoItem: VFC<Props> = (props) => {
       }
     }
   }, []);
-
   const handleCheckBoxChange = async () => {
     if (isChecked === 1) {
       setIsChecked(0);
@@ -100,13 +96,13 @@ export const TodoItem: VFC<Props> = (props) => {
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     return setTodoText(e.target.value);
   };
   // const handleInputKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
   //   console.log(e.nativeEvent.isComposing, e);
   // };
-  const handleInputKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleInputKeyDown = async (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && e.which === 13) {
       // if (e.key === "Enter" && e.isC === 13) {
       if (todoText.length !== 0 && props.name.match("new")) {
@@ -176,40 +172,41 @@ export const TodoItem: VFC<Props> = (props) => {
   };
 
   return (
-    <div className="flex items-center ">
-      <label className="mr-4 text-gray-800 hover:cursor-pointer" htmlFor={props.name}>
-        <div className="flex items-center bg-transparent">
-          <input
-            type="checkbox"
-            className={clsx(
-              "inline-block w-4 h-4 rounded-full border-0 ring-2 ring-gray-300 ring-offset-2 appearance-none hover:cursor-pointer",
-              { "bg-orange-500": props.variant === "orange" && isChecked === 1 },
-              { "bg-yellow-400": props.variant === "yellow" && isChecked === 1 },
-              { "bg-red-500": props.variant === "red" && isChecked === 1 },
+    <div className="flex relative ">
+      <div className="relative w-10">
+        <label className="absolute top-1 mr-4 text-gray-800 hover:cursor-pointer" htmlFor={props.name}>
+          <div className="flex items-center bg-transparent">
+            <input
+              type="checkbox"
+              className={clsx(
+                "inline-block w-4 h-4 rounded-full border-0 ring-2 ring-gray-300 ring-offset-2 appearance-none hover:cursor-pointer",
+                { "bg-orange-500": props.variant === "orange" && isChecked === 1 },
+                { "bg-yellow-400": props.variant === "yellow" && isChecked === 1 },
+                { "bg-red-500": props.variant === "red" && isChecked === 1 },
 
-              { "bg-white": isChecked === 0 },
-              {
-                "bg-gray-300 ring-4 ring-offset-0 ": todoText.length === 0 && isFocus === false,
-              }
-            )}
-            disabled={isFocus && todoText.length === 0}
-            value={isChecked}
-            // onClick={handleClick}
-            onChange={handleCheckBoxChange}
-          />
-          {todoText.length === 0 && isFocus === false ? (
-            <PlusSmIcon className="absolute w-4 h-4 text-white bg-gray-300" />
-          ) : null}
-        </div>
-      </label>
+                { "bg-white": isChecked === 0 },
+                {
+                  "bg-gray-300 ring-4 ring-offset-0 ": todoText.length === 0 && isFocus === false,
+                }
+              )}
+              disabled={isFocus && todoText.length === 0}
+              value={isChecked}
+              // onClick={handleClick}
+              onChange={handleCheckBoxChange}
+            />
+            {todoText.length === 0 && isFocus === false ? (
+              <PlusSmIcon className="absolute w-4 h-4 text-white bg-gray-300" />
+            ) : null}
+          </div>
+        </label>
+      </div>
 
-      <div className="group container relative bg-transparent">
-        <Input
+      <div className="group container flex relative justify-between ">
+        <Textarea
           label=""
           linethrough={isChecked}
           variant={props.variant}
           name={props.name}
-          type="text"
           placeholder="タスクを追加する"
           value={todoText}
           onKeyDown={handleInputKeyDown}
@@ -218,8 +215,9 @@ export const TodoItem: VFC<Props> = (props) => {
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
         />
+
         {props.name.match("new") ? null : (
-          <div className="flex absolute inset-y-0 right-1 items-center my-auto space-x-5 h-full opacity-0 group-hover:opacity-100">
+          <div className="flex my-auto space-x-3 h-full  opacity-0 group-hover:opacity-100">
             <DocumentDuplicateIcon className="w-5 h-5 text-gray-400 cursor-pointer" onClick={handleDuplicate} />
             <TrashIcon className="w-5 h-5 text-gray-400 cursor-pointer" onClick={handleTrash} />
           </div>
