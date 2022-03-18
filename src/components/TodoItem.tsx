@@ -103,9 +103,12 @@ export const TodoItem: VFC<Props> = (props) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     return setTodoText(e.target.value);
   };
-
+  // const handleInputKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+  //   console.log(e.nativeEvent.isComposing, e);
+  // };
   const handleInputKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.which === 13) {
+      // if (e.key === "Enter" && e.isC === 13) {
       if (todoText.length !== 0 && props.name.match("new")) {
         try {
           await createTodo({
@@ -210,6 +213,7 @@ export const TodoItem: VFC<Props> = (props) => {
           placeholder="タスクを追加する"
           value={todoText}
           onKeyDown={handleInputKeyDown}
+          // onKeyUp={handleInputKeyUp}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
