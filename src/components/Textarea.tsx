@@ -34,6 +34,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
             placeholder={props.placeholder}
             name={props.name}
             onKeyDown={props.onKeyDown}
+            onFocus={props.onFocus}
             onChange={props.onChange}
             onBlur={props.onBlur}
           />
