@@ -126,6 +126,14 @@ export const TodoItem: VFC<Props> = (props) => {
 
         setTodoText("");
       } else if (todoText.length !== 0) {
+        const id = notifications.showNotification({
+          loading: true,
+          title: "Loading your data",
+          message: "Data will be updated, you cannot close this yet",
+          autoClose: false,
+          disallowClose: true,
+        });
+
         try {
           await updateTodo({
             variables: {
@@ -138,8 +146,24 @@ export const TodoItem: VFC<Props> = (props) => {
               order_index: props.todo?.order_index,
             },
           });
+          notifications.updateNotification(id, {
+            id,
+            color: "teal",
+            title: "Data was updated",
+            message: "Notification will close in 3 seconds, you can close this notification now",
+            icon: <CheckIcon />,
+            autoClose: 3000,
+          });
         } catch (error) {
-          alert("更新失敗");
+          // alert("更新失敗");
+          notifications.updateNotification(id, {
+            id,
+            color: "red",
+            title: "Failed to update data",
+            message: "Notification will close in 3 seconds, you can close this notification now",
+            icon: <XIcon />,
+            autoClose: 3000,
+          });
         }
       }
     }
@@ -168,7 +192,7 @@ export const TodoItem: VFC<Props> = (props) => {
     const id = notifications.showNotification({
       loading: true,
       title: "Loading your data",
-      message: "Data will be loaded in 3 seconds, you cannot close this yet",
+      message: "Data will be deleted, you cannot close this yet",
       autoClose: false,
       disallowClose: true,
     });
@@ -180,9 +204,9 @@ export const TodoItem: VFC<Props> = (props) => {
         id,
         color: "teal",
         title: "Data was deleted",
-        message: "Notification will close in 2 seconds, you can close this notification now",
+        message: "Notification will close in 3 seconds, you can close this notification now",
         icon: <CheckIcon />,
-        autoClose: 2000,
+        autoClose: 3000,
       });
     } catch (error) {
       // alert("Fail delete todo");
@@ -190,9 +214,9 @@ export const TodoItem: VFC<Props> = (props) => {
         id,
         color: "red",
         title: "Failed to delete data",
-        message: "Notification will close in 2 seconds, you can close this notification now",
+        message: "Notification will close in 3 seconds, you can close this notification now",
         icon: <XIcon />,
-        autoClose: 2000,
+        autoClose: 3000,
       });
     }
   };
