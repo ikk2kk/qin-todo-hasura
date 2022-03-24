@@ -1,5 +1,6 @@
 import { useMutation } from "@apollo/client";
-import { DocumentDuplicateIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
+import { CheckIcon, DocumentDuplicateIcon, PlusSmIcon, TrashIcon, XIcon } from "@heroicons/react/outline";
+import { useNotifications } from "@mantine/notifications";
 import clsx from "clsx";
 import { CREATE_TODO, DELETE_TODO, DUPLICATE_TODO, GET_TODOS_ALL, UPDATE_TODO } from "queries/queries";
 import type { ChangeEvent, KeyboardEvent, VFC } from "react";
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export const TodoItem: VFC<Props> = (props) => {
+  const notifications = useNotifications();
   const [isChecked, setIsChecked] = useState<number>(0);
   const [todoText, setTodoText] = useState("");
   const [isFocus, setIsFocus] = useState(false);
@@ -163,11 +165,35 @@ export const TodoItem: VFC<Props> = (props) => {
     }
   };
   const handleTrash = async () => {
+    const id = notifications.showNotification({
+      loading: true,
+      title: "Loading your data",
+      message: "Data will be loaded in 3 seconds, you cannot close this yet",
+      autoClose: false,
+      disallowClose: true,
+    });
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       await deleteTodo({ variables: { id: props.name } });
+
+      notifications.updateNotification(id, {
+        id,
+        color: "teal",
+        title: "Data was deleted",
+        message: "Notification will close in 2 seconds, you can close this notification now",
+        icon: <CheckIcon />,
+        autoClose: 2000,
+      });
     } catch (error) {
-      alert("Fail delete todo");
+      // alert("Fail delete todo");
+      notifications.updateNotification(id, {
+        id,
+        color: "red",
+        title: "Failed to delete data",
+        message: "Notification will close in 2 seconds, you can close this notification now",
+        icon: <XIcon />,
+        autoClose: 2000,
+      });
     }
   };
 
