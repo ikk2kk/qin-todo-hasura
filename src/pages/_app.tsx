@@ -1,14 +1,20 @@
 import "src/styles/global.css";
 
 import { ApolloProvider } from "@apollo/client";
+import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 import { client } from "lib/apolloClient";
 import type { AppProps } from "next/app";
 
 const App = (props: AppProps) => {
   return (
-    <ApolloProvider client={client}>
-      <props.Component {...props.pageProps} />
-    </ApolloProvider>
+    <MantineProvider>
+      <NotificationsProvider>
+        <ApolloProvider client={client}>
+          <props.Component {...props.pageProps} />
+        </ApolloProvider>
+      </NotificationsProvider>
+    </MantineProvider>
   );
 };
 
