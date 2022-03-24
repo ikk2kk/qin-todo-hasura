@@ -34,6 +34,7 @@
     "@mantine/core": "^4.0.7",
     "@mantine/hooks": "^4.0.7",
     "@mantine/notifications": "^4.0.7",
+    "@modulz/radix-icons": "^4.0.0",
     "clsx": "^1.1.1",
     "graphql": "^16.3.0",
     "next": "12.1.0",
