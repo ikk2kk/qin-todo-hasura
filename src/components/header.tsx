@@ -5,6 +5,7 @@ export const Header: VFC = () => {
   return (
     <header
       className="
+      fixed
       w-full
       sm:h-[80px]"
     >
